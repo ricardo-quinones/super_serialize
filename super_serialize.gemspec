@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
   s.summary     = "Allows for dynamically serializing fixnums, floats, arrays, hashes, and, of course, strings."
   s.description = "A super, simple way to serialize anything from fixnums and floats to arrays and hashes."
 
-  s.files = Dir["{app,config,db,lib}/**/*"] + ["MIT-LICENSE", "Rakefile", "README.rdoc"]
+  s.files = Dir["{app,config,db,lib}/**/*"] + ["MIT-LICENSE", "Rakefile", "README.md"]
 
   s.add_dependency "rails", ">= 3.2.18"
 
