@@ -32,41 +32,56 @@ Or install it yourself as:
     >  sm.varied_attr_type = 3
     >  sm.varied_attr_type
     => 3
+
     >  sm.varied_attr_type.class
     => Fixnum
+
     >  sm.varied_attr_type = "3"
     >  sm.varied_attr_type
     => 3
+
     >  sm.varied_attr_type.class
     => Fixnum
+
     >  sm.varied_attr_type = "3.0"
     >  sm.varied_attr_type
     => 3.0
+
     >  sm.varied_attr_type.class
     => Float
+
     >  sm.varied_attr_type = "some string"
     >  sm.varied_attr_type
     => "some string"
+
     >  sm.varied_attr_type.class
     => String
+
     >  sm.varied_attr_type = [1,2]
     >  sm.varied_attr_type
     => [1,2]
+
     >  sm.varied_attr_type.class
     => Array
+
     >  sm.varied_attr_type = "[1,2,3]"
     >  sm.varied_attr_type
     => [1,2]
+
     >  sm.varied_attr_type.class
     => Array
+
     >  sm.varied_attr_type = "{key: 'some value'}"
     >  sm.varied_attr_type
     => {"key" => 'some value'}
+
     >  sm.varied_attr_type.class
     => ActiveSupport::HashWithIndifferentAccess
+
     >  sm.varied_attr_type = {key: 'some value'}
     >  sm.varied_attr_type
     => {"key" => 'some value'}
+
     >  sm.varied_attr_type.class
     => ActiveSupport::HashWithIndifferentAccess
 
