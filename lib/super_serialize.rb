@@ -2,11 +2,6 @@ module SuperSerialize
   extend ActiveSupport::Concern
  
   included do
-    # Validations for super serialized columns
-    validate :check_if_super_serialized_attributes_are_valid_yaml
-
-    # Callback to yamlize super serialized columngs just prior to saving to the database
-    before_save :yamlize_super_serialized_attributes
   end
 
   module ClassMethods
@@ -110,6 +105,12 @@ module SuperSerialize
       end
 
       class_eval do
+        # Validations for super serialized columns
+        validate :check_if_super_serialized_attributes_are_valid_yaml
+
+        # Callback to yamlize super serialized columngs just prior to saving to the database
+        before_save :yamlize_super_serialized_attributes
+
         unless const_defined?('SUPER_SERIALIZED_ATTRIBUTES')
           const_set('SUPER_SERIALIZED_ATTRIBUTES', attr_names)
         end
