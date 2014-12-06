@@ -1,6 +1,6 @@
 # SuperSerialize
 
-A super, simple way to serialize anything from fixnums and floats to arrays and hashes.
+A super, simple way to serialize anything from Fixnums and Floats to Arrays, Hashes, Times and Dates.
 
 ## Installation
 
@@ -85,6 +85,33 @@ Or install it yourself as:
     >  sm.varied_attr_type.class
     => ActiveSupport::HashWithIndifferentAccess
 
+    >  sm.varied_attr_type = "2014-12-06 12:00:00 -0500"
+    >  sm.varied_attr_type
+    => 2014-12-06 12:00:00 -0500
+
+    >  sm.varied_attr_type.class
+    => Time
+
+    >  sm.varied_attr_type = Time.parse("2014-12-06 12:00:00 -0500")
+    >  sm.varied_attr_type
+    => 2014-12-06 12:00:00 -0500
+
+    >  sm.varied_attr_type.class
+    => Time
+
+    >  sm.varied_attr_type = "2014-12-06"
+    >  sm.varied_attr_type
+    => 2014-12-06 12:00:00 -0500
+
+    >  sm.varied_attr_type.class
+    => Date
+
+    >  sm.varied_attr_type = Date.parse("2014-12-06")
+    >  sm.varied_attr_type
+    => 2014-12-06
+
+    >  sm.varied_attr_type.class
+    => Date
 
 ## Contributing
 

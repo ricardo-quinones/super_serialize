@@ -59,6 +59,26 @@ module SuperSerialize
       #   => {"key" => 'some value'}
       #   >  sm.varied_attr_type.class
       #   => ActiveSupport::HashWithIndifferentAccess
+      #   >  sm.varied_attr_type = "2014-12-06 12:00:00 -0500"
+      #   >  sm.varied_attr_type
+      #   => 2014-12-06 12:00:00 -0500
+      #   >  sm.varied_attr_type.class
+      #   => Time
+      #   >  sm.varied_attr_type = Time.parse("2014-12-06 12:00:00 -0500")
+      #   >  sm.varied_attr_type
+      #   => 2014-12-06 12:00:00 -0500
+      #   >  sm.varied_attr_type.class
+      #   => Time
+      #   >  sm.varied_attr_type = "2014-12-06"
+      #   >  sm.varied_attr_type
+      #   => 2014-12-06 12:00:00 -0500
+      #   >  sm.varied_attr_type.class
+      #   => Date
+      #   >  sm.varied_attr_type = Date.parse("2014-12-06")
+      #   >  sm.varied_attr_type
+      #   => 2014-12-06
+      #   >  sm.varied_attr_type.class
+      #   => Date
 
       attr_names.each do |attr_name|
         unless column_names.include?(attr_name.to_s)
