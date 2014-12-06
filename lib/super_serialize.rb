@@ -83,6 +83,16 @@ module SuperSerialize
 
           def #{attr_name}=(value)
             current_changed_attributes = changed_attributes.dup
+
+             # Sanitizing the input
+            if value.is_a?(String)
+              value.strip!
+
+              if trying_to_serialize_a_hash?(value)
+                value = attempt_to_sanitize_hash_syntax(value)
+              end
+            end
+
             return_value = super(value)
 
             if #{attr_name} == #{attr_name}_was
@@ -115,6 +125,31 @@ module SuperSerialize
           const_set('SUPER_SERIALIZED_ATTRIBUTES', attr_names)
         end
 
+        unless const_defined?('HASH_ROCKET_REGEX_MATCH')
+          const_set('HASH_ROCKET_REGEX_MATCH',
+            %r{
+              # Do not match two colons next to each other.
+              # This is the 1st group match
+              ([^:])
+              # This is technically the 2nd group match
+              (
+                # Match the old syntax symbol hash rocket key
+                # 3rd group match
+                :([a-zA-Z_][a-zA-Z_0-9]*)
+                |
+                # Match the single quote wrapped hash rocket key
+                # 4th group match
+                '([a-zA-Z_][a-zA-Z_0-9]*)'
+                |
+                # Match the double quote wrapped hash rocket key
+                # 5th group match
+                "([a-zA-Z_][a-zA-Z_0-9]*)"
+              )
+              \s*\=>\s*
+            }x
+          )
+        end
+
         private
 
         def is_valid_yaml?(value)
@@ -123,6 +158,17 @@ module SuperSerialize
           rescue
             false
           end
+        end
+
+        def trying_to_serialize_a_hash?(value)
+          return false unless value.is_a?(String)
+          !!(value =~ /^{.+}$/)
+        end
+
+        def attempt_to_sanitize_hash_syntax(value)
+          value.gsub(self.class::HASH_ROCKET_REGEX_MATCH) do |string|
+            "#{$1}#{($3 || $4 || $5)}: "
+          end.gsub(/(:)([^\s])/, '\1 \2')
         end
 
         def yamlize_super_serialized_attributes
@@ -143,8 +189,13 @@ module SuperSerialize
         def check_if_super_serialized_attributes_are_valid_yaml
           self.class.const_get('SUPER_SERIALIZED_ATTRIBUTES').each do |attr_name|
             next unless send(attr_name)
+
             unless is_valid_yaml?(super_serialized_attr_as_string_or_yaml(attr_name))
-              errors.add(attr_name, 'could not be properly serialized. Typical serializations are numbers, strings, arrays, or hashes.')
+              if trying_to_serialize_a_hash?(read_attribute(attr_name))
+                errors.add(attr_name, 'syntax is incorrect if you are trying to save a hash. Example of a valid hash would be {some_key: "some value"}.')
+              else
+                errors.add(attr_name, 'could not be properly serialized. Typical serializations are numbers, strings, arrays, or hashes.')
+              end
             end
           end
         end
