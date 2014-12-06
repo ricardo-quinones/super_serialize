@@ -175,6 +175,15 @@ describe SomeModel do
           expect(some_model.varied_attr_type).to eq([1,2])
           expect(some_model.varied_attr_type_was).to eq('some string')
         end
+
+        it "correctly yamlizes a number string with zeros at the beginning" do
+          some_model.varied_attr_type = '0123456789'
+          expect(some_model.varied_attr_type.class).to eq(String)
+          expect(some_model.varied_attr_type).to eq('0123456789')
+          some_model.varied_attr_type = '0123456789.1234'
+          expect(some_model.varied_attr_type.class).to eq(String)
+          expect(some_model.varied_attr_type).to eq('0123456789.1234')
+        end
       end
     end
 
