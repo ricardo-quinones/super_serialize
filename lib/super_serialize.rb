@@ -75,7 +75,7 @@ module SuperSerialize
           def #{attr_name}
             value = super
             return value.with_indifferent_access if value.is_a?(Hash)
-            return value unless is_valid_yaml?(value)
+            return value unless should_return_loaded_yaml?(value)
 
             object = YAML::load(value)
             object.is_a?(Hash) ? object.with_indifferent_access : object
@@ -90,6 +90,8 @@ module SuperSerialize
 
               if trying_to_serialize_a_hash?(value)
                 value = attempt_to_sanitize_hash_syntax(value)
+              elsif is_number_string_starting_with_zero?(value)
+                value = value.to_yaml
               end
             end
 
@@ -158,6 +160,15 @@ module SuperSerialize
           rescue
             false
           end
+        end
+
+        def should_return_loaded_yaml?(value)
+          return false if is_number_string_starting_with_zero?(value)
+          is_valid_yaml?(value)
+        end
+
+        def is_number_string_starting_with_zero?(value)
+          !!(value =~ /^0\d+\.*\d*$/)
         end
 
         def trying_to_serialize_a_hash?(value)
