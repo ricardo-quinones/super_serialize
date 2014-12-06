@@ -324,6 +324,124 @@ describe SomeModel do
       end
     end
 
+    context "a Time" do
+      let(:time_string) { "2014-06-30 12:00:00 -0500" }
+      let(:time) { Time.parse(time_string) }
+
+      it "sets the correct class when using a Time object" do
+        some_model.varied_attr_type = time
+        expect(some_model.varied_attr_type).to eq(time)
+        expect(some_model.varied_attr_type.class).to eq(Time)
+      end
+
+      it "sets the correct class when using a string to a time" do
+        some_model.varied_attr_type = time_string
+        expect(some_model.varied_attr_type).to eq(time)
+        expect(some_model.varied_attr_type.class).to eq(Time)
+      end
+
+      context "persisted record" do
+        context "saving a time object" do
+          before(:each) do
+            some_model.varied_attr_type = time
+            some_model.save
+            some_model.reload
+          end
+
+          it "saves the attribute to the database as yaml" do
+            expect(some_model.read_attribute(:varied_attr_type).class).to eq(String)
+            expect(some_model.varied_attr_type).to eq(time)
+            expect(some_model.varied_attr_type.class).to eq(Time)
+          end
+
+          it "correctly sets the 'was' state of the attribute" do
+            some_model.varied_attr_type = "string"
+            expect(some_model.varied_attr_type).to eq('string')
+            expect(some_model.varied_attr_type_was).to eq(time)
+          end
+        end
+
+        context "saving a time string" do
+          before(:each) do
+            some_model.varied_attr_type = time_string
+            some_model.save
+            some_model.reload
+          end
+
+          it "saves the attribute to the database as yaml" do
+            expect(some_model.read_attribute(:varied_attr_type).class).to eq(String)
+            expect(some_model.varied_attr_type).to eq(time)
+            expect(some_model.varied_attr_type.class).to eq(Time)
+          end
+
+          it "correctly sets the 'was' state of the attribute" do
+            some_model.varied_attr_type = "string"
+            expect(some_model.varied_attr_type).to eq('string')
+            expect(some_model.varied_attr_type_was).to eq(time)
+          end
+        end
+      end
+    end
+
+    context "a Date" do
+      let(:date_string) { "2014-06-30" }
+      let(:date) { Date.parse(date_string) }
+
+      it "sets the correct class when using a Time object" do
+        some_model.varied_attr_type = date
+        expect(some_model.varied_attr_type).to eq(date)
+        expect(some_model.varied_attr_type.class).to eq(Date)
+      end
+
+      it "sets the correct class when using a string to a time" do
+        some_model.varied_attr_type = date_string
+        expect(some_model.varied_attr_type).to eq(date)
+        expect(some_model.varied_attr_type.class).to eq(Date)
+      end
+
+      context "persisted record" do
+        context "saving a time object" do
+          before(:each) do
+            some_model.varied_attr_type = date
+            some_model.save
+            some_model.reload
+          end
+
+          it "saves the attribute to the database as yaml" do
+            expect(some_model.read_attribute(:varied_attr_type).class).to eq(String)
+            expect(some_model.varied_attr_type).to eq(date)
+            expect(some_model.varied_attr_type.class).to eq(Date)
+          end
+
+          it "correctly sets the 'was' state of the attribute" do
+            some_model.varied_attr_type = "string"
+            expect(some_model.varied_attr_type).to eq('string')
+            expect(some_model.varied_attr_type_was).to eq(date)
+          end
+        end
+
+        context "saving a time string" do
+          before(:each) do
+            some_model.varied_attr_type = date_string
+            some_model.save
+            some_model.reload
+          end
+
+          it "saves the attribute to the database as yaml" do
+            expect(some_model.read_attribute(:varied_attr_type).class).to eq(String)
+            expect(some_model.varied_attr_type).to eq(date)
+            expect(some_model.varied_attr_type.class).to eq(Date)
+          end
+
+          it "correctly sets the 'was' state of the attribute" do
+            some_model.varied_attr_type = "string"
+            expect(some_model.varied_attr_type).to eq('string')
+            expect(some_model.varied_attr_type_was).to eq(date)
+          end
+        end
+      end
+    end
+
     context "errors" do
       it "shows an error when the text cannot be properly serialized" do
         some_model.varied_attr_type = "{no_bueno_hash: 12342134"
