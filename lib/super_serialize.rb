@@ -1,6 +1,6 @@
 module SuperSerialize
   extend ActiveSupport::Concern
- 
+
   included do
   end
 
@@ -112,6 +112,8 @@ module SuperSerialize
                 value = attempt_to_sanitize_hash_syntax(value)
               elsif is_number_string_starting_with_zero?(value)
                 value = value.to_yaml
+              elsif value == ''
+                value = nil
               end
             end
 
@@ -176,6 +178,9 @@ module SuperSerialize
 
         def is_valid_yaml?(value)
           begin
+            # YAML::load('') returns false
+            return true if value == ''
+
             !!YAML.load(value)
           rescue
             false
