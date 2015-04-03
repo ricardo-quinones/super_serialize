@@ -20,6 +20,15 @@ describe SomeModel do
       end
     end
 
+    context "dealing with blank string" do
+      it "saves a blank string as nil" do
+        some_model.varied_attr_type = ''
+        some_model.save
+        expect(some_model).to be_persisted
+        expect(some_model.reload.varied_attr_type).to eq(nil)
+      end
+    end
+
     context "a Fixnum" do
       context "new record" do
         it "sets the correct class when using an int" do
