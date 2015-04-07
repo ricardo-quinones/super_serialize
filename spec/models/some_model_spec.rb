@@ -455,7 +455,7 @@ describe SomeModel do
       it "shows an error when the text cannot be properly serialized" do
         some_model.varied_attr_type = "{no_bueno_hash: 12342134"
         expect(some_model).to_not be_valid
-        expect(some_model.errors.full_messages.first).to match("Varied attr type could not be properly serialized. Typical serializations are numbers, strings, arrays, or hashes.")
+        expect(some_model.errors.full_messages.first).to match('Varied attr type syntax is incorrect if you are trying to save a hash. Example of a valid hash would be {some_key: "some value"}.')
       end
 
       it "shows a hash specific error when trying to set the value to be a hash" do
@@ -494,12 +494,22 @@ describe SomeModel do
         expect(some_model.send(:attempt_to_sanitize_hash_syntax, hash_string)).to eq("{test: 1 }")
       end
 
-      it "does not try to serialize plain text with colons in it" do
-        some_model.varied_attr_type = "Note: with a colon"
-        expect(some_model.varied_attr_type).to eq("Note: with a colon")
+      it "correctly serializes plain text with one colon in it" do
+        text = "Note: with a colon"
+        some_model.varied_attr_type = text
+        expect(some_model.varied_attr_type).to eq(text)
         some_model.save
         expect(some_model).to be_persisted
-        expect(some_model.varied_attr_type).to eq("Note: with a colon")
+        expect(some_model.varied_attr_type).to eq(text)
+      end
+
+      it "correctly serializes plain text with multiple colons in it" do
+        text = "Note: with a colon And: another colon"
+        some_model.varied_attr_type = text
+        expect(some_model.varied_attr_type).to eq(text)
+        some_model.save
+        expect(some_model).to be_persisted
+        expect(some_model.varied_attr_type).to eq(text)
       end
     end
   end
