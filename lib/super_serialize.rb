@@ -222,7 +222,7 @@ module SuperSerialize
 
         def trying_to_serialize_a_hash?(value)
           return false unless value.is_a?(String)
-          !!(value =~ /^{.+}$/)
+          !!(value =~ /\A{.+|.+}\Z/)
         end
 
         def attempt_to_sanitize_hash_syntax(value)
@@ -240,7 +240,8 @@ module SuperSerialize
 
         def super_serialized_attr_as_string_or_yaml(attr_name)
           if read_attribute(attr_name).is_a?(String)
-            read_attribute(attr_name)
+            value = read_attribute(attr_name)
+            trying_to_serialize_a_hash?(value) ? value : value.to_yaml
           else
             send(attr_name).to_yaml
           end
