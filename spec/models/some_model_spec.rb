@@ -493,6 +493,14 @@ describe SomeModel do
         hash_string = "{\"test\" =>1 }"
         expect(some_model.send(:attempt_to_sanitize_hash_syntax, hash_string)).to eq("{test: 1 }")
       end
+
+      it "does not try to serialize plain text with colons in it" do
+        some_model.varied_attr_type = "Note: with a colon"
+        expect(some_model.varied_attr_type).to eq("Note: with a colon")
+        some_model.save
+        expect(some_model).to be_persisted
+        expect(some_model.varied_attr_type).to eq("Note: with a colon")
+      end
     end
   end
 end
