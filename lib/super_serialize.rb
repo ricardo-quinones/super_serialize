@@ -110,7 +110,7 @@ module SuperSerialize
 
               if trying_to_serialize_a_hash?(value)
                 value = attempt_to_sanitize_hash_syntax(value)
-              elsif is_number_string_starting_with_zero?(value)
+              elsif number_string_starting_with_zero?(value)
                 value = value.to_yaml
               elsif value == ''
                 value = nil
@@ -178,7 +178,7 @@ module SuperSerialize
 
         def is_valid_yaml?(value)
           begin
-            # YAML::load('') returns false
+            # because YAML::load('') returns false
             return true if value == ''
 
             !!YAML.load(value)
@@ -188,12 +188,36 @@ module SuperSerialize
         end
 
         def should_return_loaded_yaml?(value)
-          return false if is_number_string_starting_with_zero?(value)
+          return false if number_string_starting_with_zero?(value)
+          return false if string_with_colons_and_not_hash_or_yaml?(value)
           is_valid_yaml?(value)
         end
 
-        def is_number_string_starting_with_zero?(value)
+        def number_string_starting_with_zero?(value)
           !!(value =~ /^0\d+\.*\d*$/)
+        end
+
+        # This is to take care of the following very specific scenario:
+        # >  YAML::load("Note: something")
+        # => {"Note"=>"something"}
+        #
+        # This is only an issue when the set value has not been saved to the DB
+        def string_with_colons_and_not_hash_or_yaml?(value)
+          # Value should be a string
+          return false unless value.is_a?(String)
+
+          # Stringified YAML starts with 3 dashes; ensure not already yamilified
+          return false if !!(value =~ /\A---/)
+
+          # Should be trying to serialize a hash
+          return false if trying_to_serialize_a_hash?(value)
+
+          # Should also be valid YAML
+          return false unless is_valid_yaml?(value)
+
+          # Check if the returned, loaded, valid YAML is a Hash.
+          # If so, return string value.
+          YAML::load(value).is_a?(Hash)
         end
 
         def trying_to_serialize_a_hash?(value)
