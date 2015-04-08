@@ -291,6 +291,17 @@ describe SomeModel do
       end
 
       context "persisted record" do
+        context 'hash with hash at end' do
+          it "does not mistake a yamlized hash as an attempt to serialize a hash" do
+            h = { base_url: '/users/{{user_id}}', action: 'edit_hours', params: {} }
+            some_model.varied_attr_type = h
+            some_model.save
+            some_model.reload
+            expect(some_model.varied_attr_type).to eq(h.with_indifferent_access)
+            expect(some_model.varied_attr_type.class).to eq(ActiveSupport::HashWithIndifferentAccess)
+          end
+        end
+
         context "saving a hash" do
           before(:each) do
             some_model.varied_attr_type = hash
