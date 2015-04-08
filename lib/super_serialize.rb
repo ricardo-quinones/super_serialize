@@ -222,6 +222,7 @@ module SuperSerialize
 
         def trying_to_serialize_a_hash?(value)
           return false unless value.is_a?(String)
+          return false if !!(value =~ /\A---/)
           !!(value =~ /\A{.+|.+}\Z/)
         end
 
