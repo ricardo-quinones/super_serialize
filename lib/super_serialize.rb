@@ -6,6 +6,10 @@ module SuperSerialize
 
   module ClassMethods
     def super_serialize(*attr_names)
+      # This is to guard against trying to execute code for a Rails model where
+      # the table has not been created yet.
+      return unless ActiveRecord::Base.connection.table_exists?(table_name)
+
       # === Arguments
       # +attr_names+:: the name of the of the attributes to be super_serialized
       # === Example
