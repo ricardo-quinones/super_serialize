@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    super_serialize (0.0.9)
+    super_serialize (0.1.0)
       rails (>= 3.2.18)
 
 GEM
