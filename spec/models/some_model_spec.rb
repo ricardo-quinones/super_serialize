@@ -4,22 +4,6 @@ describe SomeModel do
   let(:some_model) { SomeModel.new }
 
   describe ".super_serialize" do
-    it "raises an error when passing in a column that a table doesn't have" do
-      expect(SomeModel).to receive(:column_names).and_call_original
-      expect { SomeModel.super_serialize(:non_existent_column) }.to raise_error
-    end
-
-    it "does not raise an error when passing in a column that a table does have" do
-      expect(SomeModel).to receive(:column_names).and_call_original
-      expect { SomeModel.super_serialize(:varied_attr_type) }.not_to raise_error
-    end
-
-    it "doesn't call code if table doesn't exist" do
-      expect(SomeModel).to_not receive(:column_names)
-      ActiveRecord::Base.connection.execute("DROP TABLE `some_models`;")
-      expect { SomeModel.super_serialize(:varied_attr_type) }.not_to raise_error
-    end
-
     context "dealing with nil" do
       it "can save as a nil value" do
         some_model.save
