@@ -85,10 +85,6 @@ module SuperSerialize
       #   => Date
 
       attr_names.each do |attr_name|
-        unless column_names.include?(attr_name.to_s)
-          raise ArgumentError, ":#{attr_name} is not a valid column name for #{name}."
-        end
-
         unless attr_name.is_a? Symbol
           raise ArgumentError, "Please pass in symbols as arguments."
         end
